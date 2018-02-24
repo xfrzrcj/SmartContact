@@ -1,0 +1,54 @@
+/**
+*CPA模式。完成任务者调用download方法通知任务发布方，任务发布方确认后调用payMoney向对应地址付钱。
+**/
+pragma solidity ^0.4.2;
+contract CPA {
+    //合约拥有者
+    address ownner;
+    //每次向下载者支付的金额
+    uint pay=10;
+    //合约拥有的总金额
+    uint money;
+    //通知下载事件
+    event Download(address from,string note);
+    //通知付费事件
+    event MoneyPay(address to,uint times);
+    //初始化合约拥有者,以及每次支付金额
+    function CPA(uint payMoney) public{
+        ownner = msg.sender;
+        pay = payMoney;
+    }
+    //向合约打钱
+    function putMoney() payable public{
+        require(msg.sender == ownner);
+        money = money + msg.value;
+    }
+    //下载请求，通知事件
+    function download(string note) payable public{
+        require(msg.value==0);
+        Download(msg.sender,note);
+    }
+    //向对应的人付钱
+    function payMoney(address to,uint times) payable public{
+        require(msg.sender == ownner);
+        uint needToPay = pay*times;
+        require(money>=needToPay);
+        to.transfer(pay*times);
+        money = money - needToPay;
+        MoneyPay(to,times);
+    }
+    
+    //毁掉合约，将钱打到合约拥有者账户
+    function destruct() public{
+        require(msg.sender == ownner);
+        selfdestruct(ownner);
+    }
+    //返回当前金额
+    function showMoney() public view returns (uint){
+        return money;
+    }
+     //返回当前下载价格
+    function showPay() public view returns (uint){
+        return pay;
+    }
+}

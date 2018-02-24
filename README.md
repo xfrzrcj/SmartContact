@@ -1,2 +1,2 @@
 # SmartContact
-智能合约
+智能合约，由solidity编写

@@ -1,0 +1,20 @@
+/**
+*充值合约
+**/
+pragma solidity ^0.4.2;
+contract Payment {
+    address ownner;
+    // 事件让轻客户端能高效的对变化做出反应。
+    event onPay(address from,uint amount,string orderNo);
+    //初始化合约所有人
+    function Payment() public{
+        ownner = msg.sender;
+    }
+    //充值时将所有资金转到合约所有人账户中
+    function pay(string  orderNo) payable public{
+        require(msg.sender != ownner && msg.value > 0);
+        ownner.transfer(msg.value);
+        onPay(msg.sender,msg.value,orderNo);
+    }
+    
+ }

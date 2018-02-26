@@ -24,7 +24,7 @@ contract CPA {
         money = money + msg.value;
     }
     //下载请求，通知事件
-    function download(string note) payable public{
+    function download(string note) public{
         require(msg.value==0);
         Download(msg.sender,note);
     }

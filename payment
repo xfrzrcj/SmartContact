@@ -16,5 +16,10 @@ contract Payment {
         ownner.transfer(msg.value);
         onPay(msg.sender,msg.value,orderNo);
     }
+    //毁掉合约，将钱打到合约拥有者账户
+    function destruct() public{
+        require(msg.sender == ownner);
+        selfdestruct(ownner);
+    }
     
  }
